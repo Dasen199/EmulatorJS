@@ -97,7 +97,7 @@
 
     <body>
         <div id="top">
-            <h1>云霸王</h1>
+            <h1>云霸王2</h1>
             <img src="docs/Logo-light.png" alt="Logo" class="logo">
         </div>
         <div id = box>
@@ -239,14 +239,13 @@
                 window.EJS_biosUrl = "";
                 window.EJS_gameUrl = url;
                 window.EJS_core = core;
-                window.EJS_pathtodata = "https://github.com/Dasen199/EmulatorJS/tree/2451dda00bceea011e1a3eb98071ed8b8c286735/data";
+                window.EJS_pathtodata = "https://github.com/Dasen199/EmulatorJS/tree/main/data/";
                 window.EJS_startOnLoaded = true;
                 window.EJS_DEBUG_XX = enableDebug;
                 window.EJS_disableDatabases = true;
                 window.EJS_threads = enableThreads;
-                window.EJS_language = 'zh-CN';
-                
-                script.src = "https://raw.gitmirror.com/Dasen199/EmulatorJS/main/data/loader.js";
+
+                script.src = "data/loader.js";
                 document.body.appendChild(script);
             }
             box.ondragover = () => box.setAttribute("drag", true);
