@@ -239,13 +239,14 @@
                 window.EJS_biosUrl = "";
                 window.EJS_gameUrl = url;
                 window.EJS_core = core;
-                window.EJS_pathtodata = "data/";
+                window.EJS_pathtodata = "https://github.com/Dasen199/EmulatorJS/tree/main/data";
                 window.EJS_startOnLoaded = true;
                 window.EJS_DEBUG_XX = enableDebug;
                 window.EJS_disableDatabases = true;
                 window.EJS_threads = enableThreads;
-
-                script.src = "data/loader.js";
+                window.EJS_language = 'zh-CN';
+                
+                script.src = "https://raw.gitmirror.com/Dasen199/EmulatorJS/main/data/loader.js";
                 document.body.appendChild(script);
             }
             box.ondragover = () => box.setAttribute("drag", true);
