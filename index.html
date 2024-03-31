@@ -2,18 +2,17 @@
 <html>
     <head>
         <title>云霸王在线模拟器</title>
-        <link rel = icon href = docs/favicon.ico sizes = "16x16 32x32 48x48 64x64" type = image/vnd.microsoft.icon>
-        <meta name = viewport content = "width = device-width, initial-scale = 1">
+        <link rel="icon" href="docs/favicon.ico" sizes="16x16 32x32 48x48 64x64" type="image/vnd.microsoft.icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
         <style>
-             body, html {
+            body, html {
                 height: 100%;
-                background-color: black;
+                background-image: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%);
+                font-family: Arial, sans-serif;
                 color: white;
-            }
-
-            body {
                 margin: 0;
-                overflow: hidden;
+                padding: 0;
             }
 
             body, #box, #top {
@@ -24,14 +23,15 @@
             }
 
             #box {
-                color: #aaa;
+                color: #ddd; /* Change the font color to a secondary prompt color */
+                text-align: center; /* Center align the text */
                 height: 20em;
                 width: 30em;
                 max-width: 80%;
                 max-height: 80%;
-                background-color: #333;
+                background-color: transparent;
                 border-radius: 0.4em;
-                border: 2px solid #555;
+                border: 2px dashed white;
                 position: relative;
                 flex-direction: column;
                 transition-duration: 0.2s;
@@ -39,12 +39,12 @@
                 font-family: monospace;
                 font-weight: bold;
                 font-size: 20px;
-                margin: 5px;
+                margin: 35px 5px 5px 5px;
             }
 
             #box:hover, #box[drag] {
                 border-color: #38f;
-                color: #ddd
+                color: #888
             }
 
             #input {
@@ -62,7 +62,8 @@
                 height: 100%
             }
 
-            select, button {
+            select,
+            button {
                 padding: 0.6em 0.4em;
                 margin: 0.5em;
                 width: 15em;
@@ -78,179 +79,212 @@
                 transition-duration: 0.2s
             }
 
-            select:hover, button:hover {
+            select:hover,
+            button:hover {
                 background-color: #666;
                 color: #ddd
             }
 
             .logo {
-                width: 130px;
-                height: 130px;
+                width: 100px;
+                height: 100px;
                 filter: drop-shadow(0 0 10px white);
+                border-radius: 50%; /* make the image circular */
             }
 
             #top {
                 margin: 5px;
             }
-        </style>
-    </head>
 
-    <body>
+            .my-element {
+                background: linear-gradient(to right, #ff758c, #ff7eb3);
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                padding: 20px;
+                color: white;
+                font-size: 18px;
+                text-align: center;
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .my-element:hover {
+                transform: scale(1.05);
+            }
+
+            h1 {
+                font-family: 'Arial Black', sans-serif;
+                font-size: 36px;
+                background-image: linear-gradient(to top, #dad4ec 0%, #dad4ec 1%, #f3e7e9 100%);
+                -webkit-background-clip: text;
+                color: transparent;
+                text-align: center; /* Center the text within the h1 element */
+            }
+         </style>
+     </head>
+
+     <body>
         <div id="top">
-            <h1>云霸王在线模拟器</h1>
-            <img src="data/icon.png" alt="Logo" class="logo">
+            <h1>云霸王<br>在线模拟器</h1>
+            <img src="https://img2.imgtp.com/2024/03/31/bQDJ8WVC.png" alt="Logo" class="logo">
         </div>
-        <div id = box>
-            <input type = file id = input>
-            Drag ROM file or click here
+      
+        <div id="box">
+            <input type="file" id="input" onchange="hideBottomText()">
+            点击这里选择游戏ROM文件<br>支持zip文件
+        </div>
+      
+        <div id="dbte" style="text-align: center; margin-bottom: 20px; font-size: 10px; margin-top: 20px;">
+            基于EmulatorJS开源许可 Based on EmulatorJS open source license
         </div>
 
-        <script>
-            let enableDebug = false;
-            let enableThreads = false;
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-            if (urlParams.get('debug') == 1) {
-                enableDebug = true;
-                console.log("Debug is enabled");
-            } else {
-                console.log("Debug is disabled");
-            }
+       <script>
+           let enableDebug = false;
+           let enableThreads = false;
+           const queryString = window.location.search;
+           const urlParams = new URLSearchParams(queryString);
+           if (urlParams.get('debug') == 1) {
+               enableDebug = true;
+               console.log("Debug is enabled");
+           } else {
+               console.log("Debug is disabled");
+           }
 
-            if (urlParams.get('threads') == 1) {
-                if (window.SharedArrayBuffer) {
-                    enableThreads = true;
-                    console.log("Threads are enabled");
-                } else {
-                    console.warn("Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724");
-                    console.log("Threads are disabled");
-                }
-            } else {
-                console.log("Threads are disabled");
-            }
-            
-            input.onchange = async () => {
-                const url = new Blob([input.files[0]])
-                const parts = input.files[0].name.split(".")
+           if (urlParams.get('threads') == 1) {
+               if (window.SharedArrayBuffer) {
+                   enableThreads = true;
+                   console.log("Threads are enabled");
+               } else {
+                   console.warn("Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724");
+                   console.log("Threads are disabled");
+               }
+           } else {
+               console.log("Threads are disabled");
+           }
 
-                const core = await (async (ext) => {
-                    if (["fds", "nes", "unif", "unf"].includes(ext))
-                        return "nes"
+           input.onchange = async () => {
+               const url = new Blob([input.files[0]])
+               const parts = input.files[0].name.split(".")
 
-                    if (["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext))
-                        return "snes"
+               const core = await (async (ext) => {
+                   if (["fds", "nes", "unif", "unf"].includes(ext))
+                       return "nes"
 
-                    if (["z64", "n64"].includes(ext))
-                        return "n64"
+                   if (["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext))
+                       return "snes"
 
-                    if (["pce"].includes(ext))
-                        return "pce"
+                   if (["z64", "n64"].includes(ext))
+                       return "n64"
 
-                    if (["ngp", "ngc"].includes(ext))
-                        return "ngp"
+                   if (["pce"].includes(ext))
+                       return "pce"
 
-                    if (["ws", "wsc"].includes(ext))
-                        return "ws"
+                   if (["ngp", "ngc"].includes(ext))
+                       return "ngp"
 
-                    if (["col", "cv"].includes(ext))
-                        return "coleco"
+                   if (["ws", "wsc"].includes(ext))
+                       return "ws"
 
-                    if (["d64"].includes(ext))
-                        return "vice_x64sc"
+                   if (["col", "cv"].includes(ext))
+                       return "coleco"
 
-                    if (["nds", "gba", "gb", "z64", "n64"].includes(ext))
-                        return ext
+                   if (["d64"].includes(ext))
+                       return "vice_x64sc"
 
-                    return await new Promise(resolve => {
-                        var coreValues = {
-                            "Nintendo 64": "n64",
-                            "Nintendo Game Boy": "gb",
-                            "Nintendo Game Boy Advance": "gba",
-                            "Nintendo DS": "nds",
-                            "Nintendo Entertainment System": "nes",
-                            "Super Nintendo Entertainment System": "snes",
-                            "PlayStation": "psx",
-                            "Virtual Boy": "vb",
-                            "Sega Mega Drive": "segaMD",
-                            "Sega Master System": "segaMS",
-                            "Sega CD": "segaCD",
-                            "Atari Lynx": "lynx",
-                            "Sega 32X": "sega32x",
-                            "Atari Jaguar": "jaguar",
-                            "Sega Game Gear": "segaGG",
-                            "Sega Saturn": "segaSaturn",
-                            "Atari 7800": "atari7800",
-                            "Atari 2600": "atari2600",
-                            "NEC TurboGrafx-16/SuperGrafx/PC Engine": "pce",
-                            "NEC PC-FX": "pcfx",
-                            "SNK NeoGeo Pocket (Color)": "ngp",
-                            "Bandai WonderSwan (Color)": "ws",
-                            "ColecoVision": "coleco",
-                            "Commodore 64": "vice_x64sc",
-                            "Commodore 128": "vice_x128",
-                            "Commodore VIC20": "vice_xvic",
-                            "Commodore Plus/4": "vice_xplus4",
-                            "Commodore PET": "vice_xpet"
-                        }
+                   if (["nds", "gba", "gb", "z64", "n64"].includes(ext))
+                       return ext
 
-                        const cores = Object.keys(coreValues).sort().reduce(
-                            (obj, key) => { 
-                                obj[key] = coreValues[key]; 
-                                return obj;
-                            }, 
-                            {}
-                        );
+                   return await new Promise(resolve => {
+                       var coreValues = {
+                           "Nintendo 64": "n64",
+                           "Nintendo Game Boy": "gb",
+                           "Nintendo Game Boy Advance": "gba",
+                           "Nintendo DS": "nds",
+                           "Nintendo Entertainment System": "nes",
+                           "Super Nintendo Entertainment System": "snes",
+                           "PlayStation": "psx",
+                           "Virtual Boy": "vb",
+                           "Sega Mega Drive": "segaMD",
+                           "Sega Master System": "segaMS",
+                           "Sega CD": "segaCD",
+                           "Atari Lynx": "lynx",
+                           "Sega 32X": "sega32x",
+                           "Atari Jaguar": "jaguar",
+                           "Sega Game Gear": "segaGG",
+                           "Sega Saturn": "segaSaturn",
+                           "Atari 7800": "atari7800",
+                           "Atari 2600": "atari2600",
+                           "NEC TurboGrafx-16/SuperGrafx/PC Engine": "pce",
+                           "NEC PC-FX": "pcfx",
+                           "SNK NeoGeo Pocket (Color)": "ngp",
+                           "Bandai WonderSwan (Color)": "ws",
+                           "ColecoVision": "coleco",
+                           "Commodore 64": "vice_x64sc",
+                           "Commodore 128": "vice_x128",
+                           "Commodore VIC20": "vice_xvic",
+                           "Commodore Plus/4": "vice_xplus4",
+                           "Commodore PET": "vice_xpet"
+                       }
 
-                        const button = document.createElement("button")
-                        const select = document.createElement("select")
+                       const cores = Object.keys(coreValues).sort().reduce(
+                           (obj, key) => { 
+                               obj[key] = coreValues[key]; 
+                               return obj;
+                           }, 
+                           {}
+                       );
 
-                        for (const type in cores) {
-                            const option = document.createElement("option")
+                       const button = document.createElement("button")
+                       const select = document.createElement("select")
 
-                            option.value = cores[type]
-                            option.textContent = type
-                            select.appendChild(option)
-                        }
+                       for (const type in cores) {
+                           const option = document.createElement("option")
 
-                        button.onclick = () => resolve(select[select.selectedIndex].value)
-                        button.textContent = "Load game"
-                        box.innerHTML = ""
+                           option.value = cores[type]
+                           option.textContent = type
+                           select.appendChild(option)
+                       }
 
-                        box.appendChild(select)
-                        box.appendChild(button)
-                    })
-                })(parts.pop())
+                       button.onclick = () => resolve(select[select.selectedIndex].value)
+                       button.textContent = "加载游戏"
+                       box.innerHTML = ""
 
-                const div = document.createElement("div")
-                const sub = document.createElement("div")
-                const script = document.createElement("script")
+                       box.appendChild(select)
+                       box.appendChild(button)
+                   })
+               })(parts.pop())
 
-                sub.id = "game"
-                div.id = "display"
+               const div = document.createElement("div")
+               const sub = document.createElement("div")
+               const script = document.createElement("script")
 
-                const top = document.getElementById("top");
-                top.remove();
-                box.remove()
-                div.appendChild(sub)
-                document.body.appendChild(div)
+               sub.id = "game"
+               div.id = "display"
 
-                window.EJS_player = "#game";
-                window.EJS_gameName = parts.shift();
-                window.EJS_biosUrl = "";
-                window.EJS_gameUrl = url;
-                window.EJS_core = core;
-                window.EJS_pathtodata = (window.cdn) ? window.cdn : "https://cdn.emulatorjs.org/stable/data/";
-                window.EJS_startOnLoaded = true;
-                window.EJS_DEBUG_XX = enableDebug;
-                window.EJS_disableDatabases = true;
-                window.EJS_threads = enableThreads;
-                window.EJS_language = 'zh-CN'; //language
-                
-                script.src = (window.cdn) ? window.cdn + "loader.js" : "https://cdn.emulatorjs.org/stable/data/loader.js";
-                document.body.appendChild(script);
-            }
-            box.ondragover = () => box.setAttribute("drag", true);
-            box.ondragleave = () => box.removeAttribute("drag");
-        </script>
+               const top = document.getElementById("top");
+               top.remove();
+               box.remove()
+               dbte.remove()
+               div.appendChild(sub)
+               document.body.appendChild(div)
+
+               window.EJS_player = "#game";
+               window.EJS_gameName = parts.shift();
+               window.EJS_biosUrl = "";
+               window.EJS_gameUrl = url;
+               window.EJS_core = core;
+               window.EJS_pathtodata = (window.cdn) ? window.cdn : "https://cdn.emulatorjs.org/stable/data/";
+               window.EJS_startOnLoaded = true;
+               window.EJS_DEBUG_XX = enableDebug;
+               window.EJS_disableDatabases = true;
+               window.EJS_threads = enableThreads;
+               window.EJS_language = 'zh-CN'; //language
+
+               script.src = (window.cdn) ? window.cdn + "loader.js" : "https://cdn.emulatorjs.org/stable/data/loader.js";
+               document.body.appendChild(script);
+           }
+           box.ondragover = () => box.setAttribute("drag", true);
+           box.ondragleave = () => box.removeAttribute("drag");
+       </script>
+      
     </body>
 </html>
