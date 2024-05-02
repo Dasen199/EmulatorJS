@@ -4,7 +4,7 @@
         <title>云霸王在线模拟器</title>
         <link rel="icon" href="docs/favicon.ico" sizes="16x16 32x32 48x48 64x64" type="image/vnd.microsoft.icon">
         <meta name="viewport" content="width=device-width, initial-scale=1">
- 
+
         <style>
             body, html {
                 height: 100%;
@@ -127,14 +127,20 @@
             <h1>云霸王<br>在线模拟器</h1>
             <img src="https://img2.imgtp.com/2024/03/31/bQDJ8WVC.png" alt="Logo" class="logo">
         </div>
-      
+
         <div id="box">
             <input type="file" id="input" onchange="hideBottomText()">
             点击这里选择游戏ROM文件<br>支持zip文件
+            <div id="dbtee" style="text-align: left; margin-bottom: 0px; font-size: 10px; margin-top: 20px;margin-left: 15px;margin-right: 15px;
+          ">
+            提示：<br>1.保存游戏（仅支持）：点击菜单—快速保存<br>2.选择zip压缩包格式文件，需要自行选择游戏机种类<br>3.锐化清晰：着色器—选择2—4xScaleHQ
+           </div>
         </div>
-      
+
         <div id="dbte" style="text-align: center; margin-bottom: 20px; font-size: 10px; margin-top: 20px;">
             基于EmulatorJS开源许可 Based on EmulatorJS open source license
+
+
         </div>
 
        <script>
@@ -279,13 +285,13 @@
                window.EJS_threads = enableThreads;
                window.EJS_language = 'zh-CN'; //language
                window.EJS_fullscreenOnLoaded = true;
-            
+
                script.src = (window.cdn) ? window.cdn + "loader.js" : "https://cdn.emulatorjs.org/stable/data/loader.js";
                document.body.appendChild(script);
            }
            box.ondragover = () => box.setAttribute("drag", true);
            box.ondragleave = () => box.removeAttribute("drag");
        </script>
-      
+
     </body>
 </html>
