@@ -6,14 +6,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <style>
-            body, html {
+            html {
                 height: 100%;
                 background-image: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%);
+                background-attachment: fixed;
                 font-family: Arial, sans-serif;
                 color: white;
                 margin: 0;
                 padding: 0;
             }
+
 
             body, #box, #top {
                 display: flex;
@@ -25,21 +27,21 @@
             #box {
                 color: #ddd; /* Change the font color to a secondary prompt color */
                 text-align: center; /* Center align the text */
-                height: 20em;
+                height: 10em;
                 width: 30em;
                 max-width: 80%;
-                max-height: 80%;
+
                 background-color: transparent;
                 border-radius: 0.4em;
                 border: 2px dashed white;
                 position: relative;
                 flex-direction: column;
                 transition-duration: 0.2s;
-                overflow: hidden;
+
                 font-family: monospace;
                 font-weight: bold;
                 font-size: 20px;
-                margin: 35px 5px 5px 5px;
+                margin: 25px 5px 5px 5px;
             }
 
             #box:hover, #box[drag] {
@@ -90,11 +92,11 @@
                 height: 100px;
                 filter: drop-shadow(0 0 10px white);
                 border-radius: 50%; /* make the image circular */
-              margin-top: 15px;
             }
 
             #top {
                 margin: 5px;
+
             }
 
             .my-element {
@@ -113,33 +115,38 @@
             }
 
             h1 {
+
                 font-family: 'Arial Black', sans-serif;
                 font-size: 36px;
                 background-image: linear-gradient(to top, #dad4ec 0%, #dad4ec 1%, #f3e7e9 100%);
                 -webkit-background-clip: text;
                 color: transparent;
                 text-align: center; /* Center the text within the h1 element */
+
             }
+
+
+
          </style>
      </head>
 
      <body>
         <div id="top">
-           
+            <h1>云霸王<br>在线模拟器</h1>
             <img src="https://img2.imgtp.com/2024/03/31/bQDJ8WVC.png" alt="Logo" class="logo">
         </div>
 
         <div id="box">
             <input type="file" id="input" onchange="hideBottomText()">
             点击这里选择游戏ROM文件<br>支持zip文件
-            <div id="dbtee" style="text-align: left; margin-bottom: 0px; font-size: 10px; margin-top: 10px;margin-left: 15px;margin-right: 15px;
-          ">
-            1.保存游戏（仅支持）：点击菜单—快速保存<br>2.选择zip压缩包格式文件，需要自行选择游戏机种类<br>3.锐化清晰：着色器—选择2—4xScaleHQ
-           </div>
+          
         </div>
-
-        <div id="dbte" style="text-align: center; margin-bottom: 20px; font-size: 10px; margin-top: 10px;">
-            云霸王万能模拟器/EmulatorJS开源许可/Built on April 2021
+         <div id="dbtee" style="text-align: left; margin-bottom: 0px; font-size: 13px; margin-top: 20px;margin-left: 15px;margin-right: 15px;
+               ">
+                 提示：<br>1.保存/加载游戏（仅支持）：菜单—快速保存/加载。<br>2.选择zip压缩包格式文件，需要自行选择游戏机种类。<br>3.锐化清晰：着色器—选择2—4xScaleHQ。<br>4.关于在线模拟器：里面集合了各种复古游戏机的模拟器，只需上传游戏文件（ROM)即可。
+                </div>
+        <div id="dbte" style="text-align: center; margin-bottom: 20px; font-size: 10px; margin-top: 130px;">
+            基于EmulatorJS开源许可 Based on EmulatorJS open source license<br>YunBaWan Universal Simulator Creative Ownership
 
 
         </div>
@@ -286,90 +293,6 @@
                window.EJS_threads = enableThreads;
                window.EJS_language = 'zh-CN'; //language
                window.EJS_fullscreenOnLoaded = true;
-
- window.EJS_VirtualGamepadSettings = [
-    {
-        type: "button",
-        text: "Y",
-        id: "y",
-        location: "right",
-        left: 40,
-        bold: true,
-        input_value: 9
-    },
-    {
-        type: "button",
-        text: "X",
-        id: "X",
-        location: "right",
-        top: 40,
-        bold: true,
-        input_value: 1
-    },
-    {
-        type: "button",
-        text: "B",
-        id: "b",
-        location: "right",
-        left: 81,
-        top: 40,
-        bold: true,
-        input_value: 8
-    },
-    {
-        type: "button",
-        text: "A",
-        id: "a",
-        location: "right",
-        left: 40,
-        top: 80,
-        bold: true,
-        input_value: 0
-    },
-    {
-        type: "zone",
-        location: "left",
-        left: "50%",
-        top: "50%",
-        joystickInput: true,
-        color: "blue",
-        inputValues: [19, 18, 17, 16]
-    },
-    //Note- the dpad and the zone will overlap in this example, this is just to show what it should look like.
-    {
-        type: "dpad",
-        location: "left",
-        left: "50%",
-        right: "50%",
-        joystickInput: false,
-        inputValues: [4, 5, 6, 7]
-    },
-    {
-        type: "button",
-        text: "Start",
-        id: "start",
-        location: "center",
-        left: 60,
-        fontSize: 15,
-        block: true,
-        input_value: 3
-    },
-    {
-        type: "button",
-        text: "Select",
-        id: "select",
-        location: "center",
-        left: -5,
-        fontSize: 15,
-        block: true,
-        input_value: 2
-    }
-]
-
-
-
-
-
 
                script.src = (window.cdn) ? window.cdn + "loader.js" : "https://cdn.emulatorjs.org/stable/data/loader.js";
                document.body.appendChild(script);
