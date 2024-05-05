@@ -15,10 +15,7 @@
                 margin: 0;
                 padding: 0;
             }
-  body {
-                height: 100%;
-              
-            }
+
 
 
             body, #box, #top {
@@ -279,8 +276,12 @@
                div.id = "display"
 
                const top = document.getElementById("top");
-              
-            
+              document.body.style.height = '100%';
+document.body.style.backgroundAttachment = 'fixed';
+document.body.style.fontFamily = 'Arial, sans-serif';
+document.body.style.color = 'white';
+document.body.style.margin = '0';
+document.body.style.padding = '0';
 
                top.remove();
                box.remove()
