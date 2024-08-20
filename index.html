@@ -1,19 +1,22 @@
+<!DOCTYPE html>
 <html>
     <head>
-        <title>EmulatorJS Demo</title>
-        <link rel = icon href = docs/favicon.ico sizes = "16x16 32x32 48x48 64x64" type = image/vnd.microsoft.icon>
-        <meta name = viewport content = "width = device-width, initial-scale = 1">
+        <title>云霸王在线模拟器</title>
+        <link rel="icon" href="docs/favicon.ico" sizes="16x16 32x32 48x48 64x64" type="image/vnd.microsoft.icon">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
         <style>
-             body, html {
+            html {
                 height: 100%;
-                background-color: black;
+                background-image: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%);
+                background-attachment: fixed;
+                font-family: Arial, sans-serif;
                 color: white;
+                margin: 0;
+                padding: 0;
             }
 
-            body {
-                margin: 0;
-                overflow: hidden;
-            }
+
 
             body, #box, #top {
                 display: flex;
@@ -23,27 +26,28 @@
             }
 
             #box {
-                color: #aaa;
-                height: 20em;
+                color: #ddd; /* Change the font color to a secondary prompt color */
+                text-align: center; /* Center align the text */
+                height: 10em;
                 width: 30em;
                 max-width: 80%;
-                max-height: 80%;
-                background-color: #333;
+
+                background-color: transparent;
                 border-radius: 0.4em;
-                border: 2px solid #555;
+                border: 2px dashed white;
                 position: relative;
                 flex-direction: column;
                 transition-duration: 0.2s;
-                overflow: hidden;
+
                 font-family: monospace;
                 font-weight: bold;
                 font-size: 20px;
-                margin: 5px;
+                margin: 25px 5px 5px 5px;
             }
 
             #box:hover, #box[drag] {
                 border-color: #38f;
-                color: #ddd
+                color: #888
             }
 
             #input {
@@ -61,7 +65,8 @@
                 height: 100%
             }
 
-            select, button {
+            select,
+            button {
                 padding: 0.6em 0.4em;
                 margin: 0.5em;
                 width: 15em;
@@ -77,178 +82,235 @@
                 transition-duration: 0.2s
             }
 
-            select:hover, button:hover {
+            select:hover,
+            button:hover {
                 background-color: #666;
                 color: #ddd
             }
 
             .logo {
-                width: 130px;
-                height: 130px;
+                width: 100px;
+                height: 100px;
                 filter: drop-shadow(0 0 10px white);
+                border-radius: 50%; /* make the image circular */
             }
 
             #top {
                 margin: 5px;
-            }
-        </style>
-    </head>
 
-    <body>
-        <div id="top">
-            <h1>EmulatorJS Demo</h1>
-            <img src="docs/Logo-light.png" alt="Logo" class="logo">
-        </div>
-        <div id = box>
-            <input type = file id = input>
-            Drag ROM file or click here
-        </div>
-
-        <script>
-            let enableDebug = false;
-            let enableThreads = false;
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-            if (urlParams.get('debug') == 1) {
-                enableDebug = true;
-                console.log("Debug is enabled");
-            } else {
-                console.log("Debug is disabled");
             }
 
-            if (urlParams.get('threads') == 1) {
-                if (window.SharedArrayBuffer) {
-                    enableThreads = true;
-                    console.log("Threads are enabled");
-                } else {
-                    console.warn("Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724");
-                    console.log("Threads are disabled");
-                }
-            } else {
-                console.log("Threads are disabled");
+            .my-element {
+                background: linear-gradient(to right, #ff758c, #ff7eb3);
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                padding: 20px;
+                color: white;
+                font-size: 18px;
+                text-align: center;
+                transition: transform 0.3s ease-in-out;
             }
-            
-            input.onchange = async () => {
-                const url = input.files[0]
-                const parts = input.files[0].name.split(".")
 
-                const core = await (async (ext) => {
-                    if (["fds", "nes", "unif", "unf"].includes(ext))
-                        return "nes"
-
-                    if (["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext))
-                        return "snes"
-
-                    if (["z64", "n64"].includes(ext))
-                        return "n64"
-
-                    if (["pce"].includes(ext))
-                        return "pce"
-
-                    if (["ngp", "ngc"].includes(ext))
-                        return "ngp"
-
-                    if (["ws", "wsc"].includes(ext))
-                        return "ws"
-
-                    if (["col", "cv"].includes(ext))
-                        return "coleco"
-
-                    if (["d64"].includes(ext))
-                        return "vice_x64sc"
-
-                    if (["nds", "gba", "gb", "z64", "n64"].includes(ext))
-                        return ext
-
-                    return await new Promise(resolve => {
-                        var coreValues = {
-                            "Nintendo 64": "n64",
-                            "Nintendo Game Boy": "gb",
-                            "Nintendo Game Boy Advance": "gba",
-                            "Nintendo DS": "nds",
-                            "Nintendo Entertainment System": "nes",
-                            "Super Nintendo Entertainment System": "snes",
-                            "PlayStation": "psx",
-                            "Virtual Boy": "vb",
-                            "Sega Mega Drive": "segaMD",
-                            "Sega Master System": "segaMS",
-                            "Sega CD": "segaCD",
-                            "Atari Lynx": "lynx",
-                            "Sega 32X": "sega32x",
-                            "Atari Jaguar": "jaguar",
-                            "Sega Game Gear": "segaGG",
-                            "Sega Saturn": "segaSaturn",
-                            "Atari 7800": "atari7800",
-                            "Atari 2600": "atari2600",
-                            "NEC TurboGrafx-16/SuperGrafx/PC Engine": "pce",
-                            "NEC PC-FX": "pcfx",
-                            "SNK NeoGeo Pocket (Color)": "ngp",
-                            "Bandai WonderSwan (Color)": "ws",
-                            "ColecoVision": "coleco",
-                            "Commodore 64": "vice_x64sc",
-                            "Commodore 128": "vice_x128",
-                            "Commodore VIC20": "vice_xvic",
-                            "Commodore Plus/4": "vice_xplus4",
-                            "Commodore PET": "vice_xpet"
-                        }
-
-                        const cores = Object.keys(coreValues).sort().reduce(
-                            (obj, key) => { 
-                                obj[key] = coreValues[key]; 
-                                return obj;
-                            }, 
-                            {}
-                        );
-
-                        const button = document.createElement("button")
-                        const select = document.createElement("select")
-
-                        for (const type in cores) {
-                            const option = document.createElement("option")
-
-                            option.value = cores[type]
-                            option.textContent = type
-                            select.appendChild(option)
-                        }
-
-                        button.onclick = () => resolve(select[select.selectedIndex].value)
-                        button.textContent = "Load game"
-                        box.innerHTML = ""
-
-                        box.appendChild(select)
-                        box.appendChild(button)
-                    })
-                })(parts.pop())
-
-                const div = document.createElement("div")
-                const sub = document.createElement("div")
-                const script = document.createElement("script")
-
-                sub.id = "game"
-                div.id = "display"
-
-                const top = document.getElementById("top");
-                top.remove();
-                box.remove()
-                div.appendChild(sub)
-                document.body.appendChild(div)
-
-                window.EJS_player = "#game";
-                window.EJS_gameName = parts.shift();
-                window.EJS_biosUrl = "";
-                window.EJS_gameUrl = url;
-                window.EJS_core = core;
-                window.EJS_pathtodata = "data/";
-                window.EJS_startOnLoaded = true;
-                window.EJS_DEBUG_XX = enableDebug;
-                window.EJS_disableDatabases = true;
-                window.EJS_threads = enableThreads;
-
-                script.src = "data/loader.js";
-                document.body.appendChild(script);
+            .my-element:hover {
+                transform: scale(1.05);
             }
-            box.ondragover = () => box.setAttribute("drag", true);
-            box.ondragleave = () => box.removeAttribute("drag");
-        </script>
+
+            h1 {
+
+                font-family: 'Arial Black', sans-serif;
+                font-size: 36px;
+                background-image: linear-gradient(to top, #dad4ec 0%, #dad4ec 1%, #f3e7e9 100%);
+                -webkit-background-clip: text;
+                color: transparent;
+                text-align: center; /* Center the text within the h1 element */
+
+            }
+
+
+
+         </style>
+     </head>
+
+     <body>
+      <div id="top">
+    <h1>云霸王<br>在线模拟器</h1>
+    <img src="https://img.wf/srSYZq.png" alt="Logo" class="logo">
+</div>
+
+<div id="box">
+    <input type="file" id="input" onchange="hideBottomText()">
+    点击这里选择游戏ROM文件<br>支持zip文件
+</div>
+
+<div id="dbtee" style="text-align: left; margin-bottom: 0px; font-size: 13px; margin-top: 20px; margin-left: 15px; margin-right: 15px;">
+    提示：<br>
+    1.支持保存/加载游戏：菜单—快速保存/加载。<br>
+    2.游戏锐化清晰：着色器—选择2—4xScaleHQ。<br>
+    4.关于在线模拟器：里面集合了各种复古游戏机的模拟器，只需上传游戏文件（ROM)即可玩了。<br>
+    5.模拟器使用教程：<a href="https://jiejigame.pages.dev/jiaoc.mp4" target="_blank">https://jiejigame.pages.dev/jiaoc.mp4</a>
+</div>
+
+<div id="dbte" style="text-align: center; margin-bottom: 20px; font-size: 10px; margin-top: 130px;">
+    基于EmulatorJS开源许可 Based on EmulatorJS open source license<br>YunBaWan Universal Simulator Creative Ownership
+</div>
+
+       <script>
+           let enableDebug = false;
+           let enableThreads = false;
+           const queryString = window.location.search;
+           const urlParams = new URLSearchParams(queryString);
+           if (urlParams.get('debug') == 1) {
+               enableDebug = true;
+               console.log("Debug is enabled");
+           } else {
+               console.log("Debug is disabled");
+           }
+
+           if (urlParams.get('threads') == 1) {
+               if (window.SharedArrayBuffer) {
+                   enableThreads = true;
+                   console.log("Threads are enabled");
+               } else {
+                   console.warn("Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724");
+                   console.log("Threads are disabled");
+               }
+           } else {
+               console.log("Threads are disabled");
+           }
+
+           input.onchange = async () => {
+               const url = new Blob([input.files[0]])
+               const parts = input.files[0].name.split(".")
+
+               const core = await (async (ext) => {
+                   if (["fds", "nes", "unif", "unf"].includes(ext))
+                       return "nes"
+
+                   if (["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext))
+                       return "snes"
+
+                   if (["z64", "n64"].includes(ext))
+                       return "n64"
+
+                   if (["pce"].includes(ext))
+                       return "pce"
+
+                   if (["ngp", "ngc"].includes(ext))
+                       return "ngp"
+
+                   if (["ws", "wsc"].includes(ext))
+                       return "ws"
+
+                   if (["col", "cv"].includes(ext))
+                       return "coleco"
+
+                   if (["d64"].includes(ext))
+                       return "vice_x64sc"
+
+                   if (["nds", "gba", "gb", "z64", "n64"].includes(ext))
+                       return ext
+
+                   return await new Promise(resolve => {
+                       var coreValues = {
+                           "N64": "n64",
+                           "GB": "gb",
+                           "GBA": "gba",
+                           "NDS": "nds",
+                           "NES/FC": "nes",
+                           "NES/SFC": "snes",
+                           "PSX": "psx",
+                           "VB": "vb",
+                           "世嘉 MD": "segaMD",
+                           "世嘉 MS": "segaMS",
+                           "世嘉 CD": "segaCD",
+                           "雅达利 Lynx": "lynx",
+                           "世嘉 32X": "sega32x",
+                           "世嘉 Jaguar": "jaguar",
+                           "世嘉 GG": "segaGG",
+                           "世嘉 Saturn": "segaSaturn",
+                           "雅达利 7800": "atari7800",
+                           "雅达利 2600": "atari2600",
+                           "PCE": "pce",
+                           "PCFX": "pcfx",
+                           "NGP": "ngp",
+                           "WS": "ws",
+                           "ColecoVision": "coleco",
+                           "C64": "vice_x64sc",
+                           "C128": "vice_x128",
+                           "Commodore VIC20": "vice_xvic",
+                           "Commodore Plus/4": "vice_xplus4",
+                           "Commodore PET": "vice_xpet"
+                       }
+
+                       const cores = Object.keys(coreValues).sort().reduce(
+                           (obj, key) => { 
+                               obj[key] = coreValues[key]; 
+                               return obj;
+                           }, 
+                           {}
+                       );
+
+                       const button = document.createElement("button")
+                       const select = document.createElement("select")
+
+                       for (const type in cores) {
+                           const option = document.createElement("option")
+
+                           option.value = cores[type]
+                           option.textContent = type
+                           select.appendChild(option)
+                       }
+
+                       button.onclick = () => resolve(select[select.selectedIndex].value)
+                       button.textContent = "加载游戏"
+                       box.innerHTML = ""
+
+                       box.appendChild(select)
+                       box.appendChild(button)
+                   })
+               })(parts.pop())
+
+               const div = document.createElement("div")
+               const sub = document.createElement("div")
+               const script = document.createElement("script")
+
+               sub.id = "game"
+               div.id = "display"
+
+               const top = document.getElementById("top");
+              document.body.style.height = '100%';
+              document.body.style.backgroundAttachment = 'fixed';
+              document.body.style.fontFamily = 'Arial, sans-serif';
+              document.body.style.color = 'white';
+              document.body.style.margin = '0';
+              document.body.style.padding = '0';
+
+               top.remove();
+               box.remove()
+               dbte.remove()
+                 dbtee.remove()
+               div.appendChild(sub)
+               document.body.appendChild(div)
+
+               window.EJS_player = "#game";
+               window.EJS_gameName = parts.shift();
+               window.EJS_biosUrl = "";
+               window.EJS_gameUrl = url;
+               window.EJS_core = core;
+               window.EJS_pathtodata = (window.cdn) ? window.cdn : "https://cdn.emulatorjs.org/stable/data/";
+               window.EJS_startOnLoaded = true;
+               window.EJS_DEBUG_XX = enableDebug;
+               window.EJS_disableDatabases = true;
+               window.EJS_threads = enableThreads;
+               window.EJS_language = 'zh-CN'; //language
+               window.EJS_fullscreenOnLoaded = true;
+
+               script.src = (window.cdn) ? window.cdn + "loader.js" : "https://cdn.emulatorjs.org/stable/data/loader.js";
+               document.body.appendChild(script);
+           }
+           box.ondragover = () => box.setAttribute("drag", true);
+           box.ondragleave = () => box.removeAttribute("drag");
+       </script>
+
     </body>
 </html>
