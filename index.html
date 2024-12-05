@@ -381,23 +381,97 @@
            box.ondragleave = () => box.removeAttribute("drag");
 
            function triggerFileInput() {
-               const newInput = document.createElement('input');
-               newInput.type = 'file';
-               newInput.style.display = 'none';
-               
-               newInput.onchange = function(e) {
+               try {
+                   // 方案1: 直接触发原始input
                    const originalInput = document.getElementById('input');
-                   originalInput.files = e.target.files;
-                   const event = new Event('change');
-                   originalInput.dispatchEvent(event);
-               };
-               
-               document.body.appendChild(newInput);
-               newInput.click();
-               
-               setTimeout(() => {
-                   document.body.removeChild(newInput);
-               }, 1000);
+                   originalInput.style.display = 'block';
+                   originalInput.style.position = 'fixed';
+                   originalInput.style.top = '50%';
+                   originalInput.style.left = '50%';
+                   originalInput.style.transform = 'translate(-50%, -50%)';
+                   originalInput.style.opacity = '0.01'; // 使用0.01而不是0，某些浏览器在opacity为0时会忽略点击
+                   originalInput.style.width = '80%';
+                   originalInput.style.height = '50%';
+                   originalInput.style.zIndex = '9999';
+                   
+                   originalInput.click();
+                   
+                   // 1秒后隐藏input
+                   setTimeout(() => {
+                       originalInput.style.display = 'none';
+                   }, 1000);
+               } catch (e) {
+                   console.log('方案1失败，尝试方案2', e);
+                   
+                   try {
+                       // 方案2: 创建新的input
+                       const newInput = document.createElement('input');
+                       newInput.type = 'file';
+                       newInput.style.cssText = `
+                           position: fixed;
+                           top: 50%;
+                           left: 50%;
+                           transform: translate(-50%, -50%);
+                           width: 80%;
+                           height: 50%;
+                           opacity: 0.01;
+                           z-index: 9999;
+                       `;
+                       
+                       newInput.onchange = function(e) {
+                           const originalInput = document.getElementById('input');
+                           originalInput.files = e.target.files;
+                           const event = new Event('change');
+                           originalInput.dispatchEvent(event);
+                           document.body.removeChild(newInput);
+                       };
+                       
+                       document.body.appendChild(newInput);
+                       newInput.click();
+                       
+                       // 如果3秒内没有选择文件，移除新创建的input
+                       setTimeout(() => {
+                           if (document.body.contains(newInput)) {
+                               document.body.removeChild(newInput);
+                           }
+                       }, 3000);
+                   } catch (e2) {
+                       console.log('方案2失败，尝试方案3', e2);
+                       
+                       // 方案3: 使用label触发
+                       const label = document.createElement('label');
+                       label.style.cssText = `
+                           position: fixed;
+                           top: 0;
+                           left: 0;
+                           width: 100%;
+                           height: 100%;
+                           z-index: 9999;
+                       `;
+                       
+                       const tempInput = document.createElement('input');
+                       tempInput.type = 'file';
+                       tempInput.style.display = 'none';
+                       tempInput.onchange = function(e) {
+                           const originalInput = document.getElementById('input');
+                           originalInput.files = e.target.files;
+                           const event = new Event('change');
+                           originalInput.dispatchEvent(event);
+                           document.body.removeChild(label);
+                       };
+                       
+                       label.appendChild(tempInput);
+                       document.body.appendChild(label);
+                       tempInput.click();
+                       
+                       // 3秒后移除label
+                       setTimeout(() => {
+                           if (document.body.contains(label)) {
+                               document.body.removeChild(label);
+                           }
+                       }, 3000);
+                   }
+               }
            }
 
            const box = document.getElementById('box');
