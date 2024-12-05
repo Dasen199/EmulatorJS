@@ -3,7 +3,7 @@
     <head>
         <title>云霸王在线模拟器</title>
         <link rel="icon" href="docs/favicon.ico" sizes="16x16 32x32 48x48 64x64" type="image/vnd.microsoft.icon">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
         <style>
             html {
@@ -16,130 +16,169 @@
                 padding: 0;
             }
 
-
-
-            body, #box, #top {
+            body {
                 display: flex;
-                align-items: center;
-                justify-content: center;
                 flex-direction: column;
+                align-items: center;
+                padding: 15px;
+                min-height: 100vh;
+                margin: 0;
+                box-sizing: border-box;
+            }
+
+            #top {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-family: 'Arial Black', sans-serif;
+                font-size: 28px;
+                background-image: linear-gradient(to top, #dad4ec 0%, #dad4ec 1%, #f3e7e9 100%);
+                -webkit-background-clip: text;
+                color: transparent;
+                text-align: center;
+                margin: 10px 0;
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+                filter: drop-shadow(0 0 10px white);
+                border-radius: 50%;
             }
 
             #box {
-                color: #ddd; /* Change the font color to a secondary prompt color */
-                text-align: center; /* Center align the text */
-                height: 10em;
-                width: 30em;
-                max-width: 80%;
-
-                background-color: transparent;
-                border-radius: 0.4em;
-                border: 2px dashed white;
-                position: relative;
+                width: 90%;
+                min-height: 150px;
+                margin: 15px auto;
+                padding: 20px;
+                box-sizing: border-box;
+                
+                display: flex;
                 flex-direction: column;
-                transition-duration: 0.2s;
-
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                
+                color: #fff;
+                text-align: center;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border-radius: 16px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                position: relative;
+                
                 font-family: monospace;
                 font-weight: bold;
-                font-size: 20px;
-                margin: 25px 5px 5px 5px;
+                font-size: 16px;
+                
+                cursor: pointer;
+                transition: all 0.3s ease;
             }
 
-            #box:hover, #box[drag] {
-                border-color: #38f;
-                color: #888
+            #box:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: translateY(-2px);
+            }
+
+            #box::before {
+                content: "点击选择游戏ROM文件";
+                display: block;
+                margin-bottom: 8px;
+                font-size: 18px;
+                color: #fff;
+            }
+
+            #box::after {
+                content: "支持zip文件";
+                display: block;
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.8);
             }
 
             #input {
-                cursor: pointer;
                 position: absolute;
-                left: 0;
                 top: 0;
+                left: 0;
                 width: 100%;
                 height: 100%;
-                opacity: 0
-            }
-
-            #display {
-                width: 100%;
-                height: 100%
+                opacity: 0;
+                cursor: pointer;
             }
 
             select,
             button {
-                padding: 0.6em 0.4em;
-                margin: 0.5em;
-                width: 15em;
-                max-width: 100%;
-                font-family: monospace;
-                font-weight: bold;
+                width: 90%;
+                max-width: none;
+                padding: 12px 15px;
+                margin: 8px auto;
                 font-size: 16px;
-                background-color: #444;
-                color: #aaa;
-                border-radius: 0.4em;
-                border: 1px solid #555;
-                cursor: pointer;
-                transition-duration: 0.2s
+                border-radius: 8px;
             }
 
-            select:hover,
-            button:hover {
-                background-color: #666;
-                color: #ddd
+            #dbtee {
+                width: 90%;
+                margin: 15px auto;
+                font-size: 14px;
+                line-height: 1.5;
             }
 
-            .logo {
-                width: 100px;
-                height: 100px;
-                filter: drop-shadow(0 0 10px white);
-                border-radius: 50%; /* make the image circular */
-            }
-
-            #top {
-                margin: 5px;
-
-            }
-
-            .my-element {
-                background: linear-gradient(to right, #ff758c, #ff7eb3);
-                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-                border-radius: 10px;
-                padding: 20px;
-                color: white;
-                font-size: 18px;
+            #dbte {
+                width: 90%;
+                margin: 15px auto;
+                font-size: 12px;
                 text-align: center;
-                transition: transform 0.3s ease-in-out;
             }
 
-            .my-element:hover {
-                transform: scale(1.05);
+            #display {
+                width: 100%;
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1000;
             }
 
-            h1 {
+            @media (max-width: 480px) {
+                h1 {
+                    font-size: 24px;
+                }
+                
+                #box {
+                    min-height: 130px;
+                    padding: 15px;
+                }
+                
+                #box::before {
+                    font-size: 16px;
+                }
 
-                font-family: 'Arial Black', sans-serif;
-                font-size: 36px;
-                background-image: linear-gradient(to top, #dad4ec 0%, #dad4ec 1%, #f3e7e9 100%);
-                -webkit-background-clip: text;
-                color: transparent;
-                text-align: center; /* Center the text within the h1 element */
-
+                #box::after {
+                    font-size: 12px;
+                }
+                
+                select,
+                button {
+                    padding: 10px;
+                    font-size: 14px;
+                }
             }
+        </style>
+    </head>
 
-
-
-         </style>
-     </head>
-
-     <body>
-      <div id="top">
+    <body>
+     <div id="top">
     <h1>云霸王<br>在线模拟器</h1>
     <img src="https://img.wf/srSYZq.png" alt="Logo" class="logo">
 </div>
 
 <div id="box">
     <input type="file" id="input" onchange="hideBottomText()">
-    点击这里选择游戏ROM文件<br>支持zip文件
 </div>
 
 <div id="dbtee" style="text-align: left; margin-bottom: 0px; font-size: 13px; margin-top: 20px; margin-left: 15px; margin-right: 15px;">
