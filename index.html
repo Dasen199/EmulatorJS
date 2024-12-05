@@ -24,6 +24,7 @@
                 min-height: 100vh;
                 margin: 0;
                 box-sizing: border-box;
+                padding-bottom: 50px;
             }
 
             #top {
@@ -129,10 +130,23 @@
             }
 
             #dbte {
-                width: 90%;
-                margin: 15px auto;
+                width: 100%;
+                padding: 15px 0;
+                margin-top: 20px;
+                background: rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(5px);
+                -webkit-backdrop-filter: blur(5px);
                 font-size: 12px;
                 text-align: center;
+                color: rgba(255, 255, 255, 0.6);
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            #dbte > div {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 0 15px;
+                line-height: 1.6;
             }
 
             #display {
@@ -196,163 +210,182 @@
                     padding: 10px 20px;
                     font-size: 14px;
                 }
+
+                #dbte {
+                    padding: 12px 0;
+                    margin-top: 15px;
+                    font-size: 10px;
+                }
+            }
+
+            .content-wrapper {
+                flex: 1;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-height: calc(100vh - 60px);
             }
         </style>
     </head>
-
     <body>
-     <div id="top">
-    <h1>云霸王<br>在线模拟器</h1>
-    <img src="https://img.wf/srSYZq.png" alt="Logo" class="logo">
-</div>
+        <div class="content-wrapper">
+            <div id="top">
+                <h1>云霸王<br>在线模拟器</h1>
+                <img src="https://img.wf/srSYZq.png" alt="Logo" class="logo">
+            </div>
 
-<div id="box">
-    <input type="file" id="input" onchange="hideBottomText()" style="display: none;">
-    <button class="select-file-btn" onclick="triggerFileInput()">点击选择文件</button>
-</div>
+            <div id="box">
+                <input type="file" id="input" onchange="hideBottomText()" style="display: none;">
+                <button class="select-file-btn" onclick="triggerFileInput()">点击选择文件</button>
+            </div>
 
-<div id="dbtee" style="text-align: left; margin-bottom: 0px; font-size: 13px; margin-top: 20px; margin-left: 15px; margin-right: 15px;">
-    提示：<br>
-    1.支持保存/加载游戏：菜单—快速保存/加载。<br>
-    2.游戏锐化清晰：着色器—选择2—4xScaleHQ。<br>
-    4.关于在线模拟器：里面集合了各种复古游戏机的模拟器，只需上传游戏文件（ROM)即可玩了。<br>
-    5.模拟器使用教程：<a href="https://jiejigame.pages.dev/jiaoc.mp4" target="_blank">https://jiejigame.pages.dev/jiaoc.mp4</a>
-</div>
+            <div id="dbtee" style="text-align: left; margin-bottom: 0px; font-size: 13px; margin-top: 20px; margin-left: 15px; margin-right: 15px;">
+                提示：<br>
+                1.支持保存/加载游戏：菜单—快速保存/加载。<br>
+                2.游戏锐化清晰：着色器—选择2—4xScaleHQ。<br>
+                4.关于在线模拟器：里面集合了各种复古游戏机的模拟器，只需上游戏文件（ROM)即可玩了。<br>
+                5.模拟器使用教程：<a href="https://jiejigame.pages.dev/jiaoc.mp4" target="_blank">https://jiejigame.pages.dev/jiaoc.mp4</a>
+            </div>
+        </div>
 
-<div id="dbte" style="text-align: center; margin-bottom: 20px; font-size: 10px; margin-top: 130px;">
-    基于EmulatorJS开源许可 Based on EmulatorJS open source license<br>YunBaWan Universal Simulator Creative Ownership
-</div>
+        <div id="dbte">
+            <div style="max-width: 600px; margin: 0 auto; padding: 0 15px;">
+                基于 EmulatorJS 开发 | 云霸王模拟器<br>
+                © 2024 YunBaWan Universal Simulator
+            </div>
+        </div>
 
-       <script>
-           let enableDebug = false;
-           let enableThreads = false;
-           const queryString = window.location.search;
-           const urlParams = new URLSearchParams(queryString);
-           if (urlParams.get('debug') == 1) {
-               enableDebug = true;
-               console.log("Debug is enabled");
-           } else {
-               console.log("Debug is disabled");
-           }
+        <script>
+            let enableDebug = false;
+            let enableThreads = false;
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            if (urlParams.get('debug') == 1) {
+                enableDebug = true;
+                console.log("Debug is enabled");
+            } else {
+                console.log("Debug is disabled");
+            }
 
-           if (urlParams.get('threads') == 1) {
-               if (window.SharedArrayBuffer) {
-                   enableThreads = true;
-                   console.log("Threads are enabled");
-               } else {
-                   console.warn("Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724");
-                   console.log("Threads are disabled");
-               }
-           } else {
-               console.log("Threads are disabled");
-           }
+            if (urlParams.get('threads') == 1) {
+                if (window.SharedArrayBuffer) {
+                    enableThreads = true;
+                    console.log("Threads are enabled");
+                } else {
+                    console.warn("Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724");
+                    console.log("Threads are disabled");
+                }
+            } else {
+                console.log("Threads are disabled");
+            }
 
-           input.onchange = async () => {
-               const url = new Blob([input.files[0]])
-               const parts = input.files[0].name.split(".")
+            input.onchange = async () => {
+                const url = new Blob([input.files[0]])
+                const parts = input.files[0].name.split(".")
 
-               const core = await (async (ext) => {
-                   if (["fds", "nes", "unif", "unf"].includes(ext))
-                       return "nes"
+                const core = await (async (ext) => {
+                    if (["fds", "nes", "unif", "unf"].includes(ext))
+                        return "nes"
 
-                   if (["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext))
-                       return "snes"
+                    if (["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext))
+                        return "snes"
 
-                   if (["z64", "n64"].includes(ext))
-                       return "n64"
+                    if (["z64", "n64"].includes(ext))
+                        return "n64"
 
-                   if (["pce"].includes(ext))
-                       return "pce"
+                    if (["pce"].includes(ext))
+                        return "pce"
 
-                   if (["ngp", "ngc"].includes(ext))
-                       return "ngp"
+                    if (["ngp", "ngc"].includes(ext))
+                        return "ngp"
 
-                   if (["ws", "wsc"].includes(ext))
-                       return "ws"
+                    if (["ws", "wsc"].includes(ext))
+                        return "ws"
 
-                   if (["col", "cv"].includes(ext))
-                       return "coleco"
+                    if (["col", "cv"].includes(ext))
+                        return "coleco"
 
-                   if (["d64"].includes(ext))
-                       return "vice_x64sc"
+                    if (["d64"].includes(ext))
+                        return "vice_x64sc"
 
-                   if (["nds", "gba", "gb", "z64", "n64"].includes(ext))
-                       return ext
+                    if (["nds", "gba", "gb", "z64", "n64"].includes(ext))
+                        return ext
 
-                   return await new Promise(resolve => {
-                       var coreValues = {
-                           "N64": "n64",
-                           "GB": "gb",
-                           "GBA": "gba",
-                           "NDS": "nds",
-                           "NES/FC": "nes",
-                           "NES/SFC": "snes",
-                           "PSX": "psx",
-                           "VB": "vb",
-                           "世嘉 MD": "segaMD",
-                           "世嘉 MS": "segaMS",
-                           "世嘉 CD": "segaCD",
-                           "雅达利 Lynx": "lynx",
-                           "世嘉 32X": "sega32x",
-                           "世嘉 Jaguar": "jaguar",
-                           "世嘉 GG": "segaGG",
-                           "世嘉 Saturn": "segaSaturn",
-                           "雅达利 7800": "atari7800",
-                           "雅达利 2600": "atari2600",
-                           "PCE": "pce",
-                           "PCFX": "pcfx",
-                           "NGP": "ngp",
-                           "WS": "ws",
-                           "ColecoVision": "coleco",
-                           "C64": "vice_x64sc",
-                           "C128": "vice_x128",
-                           "Commodore VIC20": "vice_xvic",
-                           "Commodore Plus/4": "vice_xplus4",
-                           "Commodore PET": "vice_xpet"
-                       }
+                    return await new Promise(resolve => {
+                        var coreValues = {
+                            "N64": "n64",
+                            "GB": "gb",
+                            "GBA": "gba",
+                            "NDS": "nds",
+                            "NES/FC": "nes",
+                            "NES/SFC": "snes",
+                            "PSX": "psx",
+                            "VB": "vb",
+                            "世嘉 MD": "segaMD",
+                            "世嘉 MS": "segaMS",
+                            "世嘉 CD": "segaCD",
+                            "雅达利 Lynx": "lynx",
+                            "世嘉 32X": "sega32x",
+                            "世嘉 Jaguar": "jaguar",
+                            "世嘉 GG": "segaGG",
+                            "世嘉 Saturn": "segaSaturn",
+                            "雅达利 7800": "atari7800",
+                            "雅达利 2600": "atari2600",
+                            "PCE": "pce",
+                            "PCFX": "pcfx",
+                            "NGP": "ngp",
+                            "WS": "ws",
+                            "ColecoVision": "coleco",
+                            "C64": "vice_x64sc",
+                            "C128": "vice_x128",
+                            "Commodore VIC20": "vice_xvic",
+                            "Commodore Plus/4": "vice_xplus4",
+                            "Commodore PET": "vice_xpet"
+                        }
 
-                       const cores = Object.keys(coreValues).sort().reduce(
-                           (obj, key) => { 
-                               obj[key] = coreValues[key]; 
-                               return obj;
-                           }, 
-                           {}
-                       );
+                        const cores = Object.keys(coreValues).sort().reduce(
+                            (obj, key) => { 
+                                obj[key] = coreValues[key]; 
+                                return obj;
+                            }, 
+                            {}
+                        );
 
-                       const button = document.createElement("button")
-                       const select = document.createElement("select")
+                        const button = document.createElement("button")
+                        const select = document.createElement("select")
 
-                       for (const type in cores) {
-                           const option = document.createElement("option")
+                        for (const type in cores) {
+                            const option = document.createElement("option")
 
-                           option.value = cores[type]
-                           option.textContent = type
-                           select.appendChild(option)
-                       }
+                            option.value = cores[type]
+                            option.textContent = type
+                            select.appendChild(option)
+                        }
 
-                       button.onclick = () => resolve(select[select.selectedIndex].value)
-                       button.textContent = "加载游戏"
-                       box.innerHTML = ""
+                        button.onclick = () => resolve(select[select.selectedIndex].value)
+                        button.textContent = "加载游戏"
+                        box.innerHTML = ""
 
-                       box.appendChild(select)
-                       box.appendChild(button)
-                   })
-               })(parts.pop())
+                        box.appendChild(select)
+                        box.appendChild(button)
+                    })
+                })(parts.pop())
 
-               const div = document.createElement("div")
-               const sub = document.createElement("div")
-               const script = document.createElement("script")
+                const div = document.createElement("div")
+                const sub = document.createElement("div")
+                const script = document.createElement("script")
 
-               sub.id = "game"
-               div.id = "display"
+                sub.id = "game"
+                div.id = "display"
 
-               const top = document.getElementById("top");
-              document.body.style.height = '100%';
-              document.body.style.backgroundAttachment = 'fixed';
-              document.body.style.fontFamily = 'Arial, sans-serif';
-              document.body.style.color = 'white';
-              document.body.style.margin = '0';
-              document.body.style.padding = '0';
+                const top = document.getElementById("top");
+               document.body.style.height = '100%';
+               document.body.style.backgroundAttachment = 'fixed';
+               document.body.style.fontFamily = 'Arial, sans-serif';
+               document.body.style.color = 'white';
+               document.body.style.margin = '0';
+               document.body.style.padding = '0';
 
                top.remove();
                box.remove()
@@ -376,127 +409,127 @@
 
                script.src = (window.cdn) ? window.cdn + "loader.js" : "https://cdn.emulatorjs.org/stable/data/loader.js";
                document.body.appendChild(script);
-           }
-           box.ondragover = () => box.setAttribute("drag", true);
-           box.ondragleave = () => box.removeAttribute("drag");
+            }
+            box.ondragover = () => box.setAttribute("drag", true);
+            box.ondragleave = () => box.removeAttribute("drag");
 
-           function triggerFileInput() {
-               try {
-                   // 方案1: 直接触发原始input
-                   const originalInput = document.getElementById('input');
-                   originalInput.style.display = 'block';
-                   originalInput.style.position = 'fixed';
-                   originalInput.style.top = '50%';
-                   originalInput.style.left = '50%';
-                   originalInput.style.transform = 'translate(-50%, -50%)';
-                   originalInput.style.opacity = '0.01'; // 使用0.01而不是0，某些浏览器在opacity为0时会忽略点击
-                   originalInput.style.width = '80%';
-                   originalInput.style.height = '50%';
-                   originalInput.style.zIndex = '9999';
-                   
-                   originalInput.click();
-                   
-                   // 1秒后隐藏input
-                   setTimeout(() => {
-                       originalInput.style.display = 'none';
-                   }, 1000);
-               } catch (e) {
-                   console.log('方案1失败，尝试方案2', e);
-                   
-                   try {
-                       // 方案2: 创建新的input
-                       const newInput = document.createElement('input');
-                       newInput.type = 'file';
-                       newInput.style.cssText = `
-                           position: fixed;
-                           top: 50%;
-                           left: 50%;
-                           transform: translate(-50%, -50%);
-                           width: 80%;
-                           height: 50%;
-                           opacity: 0.01;
-                           z-index: 9999;
-                       `;
-                       
-                       newInput.onchange = function(e) {
-                           const originalInput = document.getElementById('input');
-                           originalInput.files = e.target.files;
-                           const event = new Event('change');
-                           originalInput.dispatchEvent(event);
-                           document.body.removeChild(newInput);
-                       };
-                       
-                       document.body.appendChild(newInput);
-                       newInput.click();
-                       
-                       // 如果3秒内没有选择文件，移除新创建的input
-                       setTimeout(() => {
-                           if (document.body.contains(newInput)) {
-                               document.body.removeChild(newInput);
-                           }
-                       }, 3000);
-                   } catch (e2) {
-                       console.log('方案2失败，尝试方案3', e2);
-                       
-                       // 方案3: 使用label触发
-                       const label = document.createElement('label');
-                       label.style.cssText = `
-                           position: fixed;
-                           top: 0;
-                           left: 0;
-                           width: 100%;
-                           height: 100%;
-                           z-index: 9999;
-                       `;
-                       
-                       const tempInput = document.createElement('input');
-                       tempInput.type = 'file';
-                       tempInput.style.display = 'none';
-                       tempInput.onchange = function(e) {
-                           const originalInput = document.getElementById('input');
-                           originalInput.files = e.target.files;
-                           const event = new Event('change');
-                           originalInput.dispatchEvent(event);
-                           document.body.removeChild(label);
-                       };
-                       
-                       label.appendChild(tempInput);
-                       document.body.appendChild(label);
-                       tempInput.click();
-                       
-                       // 3秒后移除label
-                       setTimeout(() => {
-                           if (document.body.contains(label)) {
-                               document.body.removeChild(label);
-                           }
-                       }, 3000);
-                   }
-               }
-           }
+            function triggerFileInput() {
+                try {
+                    // 方案1: 直接触发原始input
+                    const originalInput = document.getElementById('input');
+                    originalInput.style.display = 'block';
+                    originalInput.style.position = 'fixed';
+                    originalInput.style.top = '50%';
+                    originalInput.style.left = '50%';
+                    originalInput.style.transform = 'translate(-50%, -50%)';
+                    originalInput.style.opacity = '0.01'; // 使用0.01而不是0，某些浏览器在opacity为0时会忽略点击
+                    originalInput.style.width = '80%';
+                    originalInput.style.height = '50%';
+                    originalInput.style.zIndex = '9999';
+                    
+                    originalInput.click();
+                    
+                    // 1秒后隐藏input
+                    setTimeout(() => {
+                        originalInput.style.display = 'none';
+                    }, 1000);
+                } catch (e) {
+                    console.log('方案1失败，尝试方案2', e);
+                    
+                    try {
+                        // 方案2: 创建新的input
+                        const newInput = document.createElement('input');
+                        newInput.type = 'file';
+                        newInput.style.cssText = `
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            width: 80%;
+                            height: 50%;
+                            opacity: 0.01;
+                            z-index: 9999;
+                        `;
+                        
+                        newInput.onchange = function(e) {
+                            const originalInput = document.getElementById('input');
+                            originalInput.files = e.target.files;
+                            const event = new Event('change');
+                            originalInput.dispatchEvent(event);
+                            document.body.removeChild(newInput);
+                        };
+                        
+                        document.body.appendChild(newInput);
+                        newInput.click();
+                        
+                        // 如果3秒内没有选择文件，移除新创建的input
+                        setTimeout(() => {
+                            if (document.body.contains(newInput)) {
+                                document.body.removeChild(newInput);
+                            }
+                        }, 3000);
+                    } catch (e2) {
+                        console.log('方案2失败，尝试方案3', e2);
+                        
+                        // 方案3: 使用label触发
+                        const label = document.createElement('label');
+                        label.style.cssText = `
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            z-index: 9999;
+                        `;
+                        
+                        const tempInput = document.createElement('input');
+                        tempInput.type = 'file';
+                        tempInput.style.display = 'none';
+                        tempInput.onchange = function(e) {
+                            const originalInput = document.getElementById('input');
+                            originalInput.files = e.target.files;
+                            const event = new Event('change');
+                            originalInput.dispatchEvent(event);
+                            document.body.removeChild(label);
+                        };
+                        
+                        label.appendChild(tempInput);
+                        document.body.appendChild(label);
+                        tempInput.click();
+                        
+                        // 3秒后移除label
+                        setTimeout(() => {
+                            if (document.body.contains(label)) {
+                                document.body.removeChild(label);
+                            }
+                        }, 3000);
+                    }
+                }
+            }
 
-           const box = document.getElementById('box');
-           
-           box.addEventListener('dragover', (e) => {
-               e.preventDefault();
-               box.style.background = 'rgba(255, 255, 255, 0.2)';
-           });
+            const box = document.getElementById('box');
+            
+            box.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                box.style.background = 'rgba(255, 255, 255, 0.2)';
+            });
 
-           box.addEventListener('dragleave', (e) => {
-               e.preventDefault();
-               box.style.background = 'rgba(255, 255, 255, 0.1)';
-           });
+            box.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                box.style.background = 'rgba(255, 255, 255, 0.1)';
+            });
 
-           box.addEventListener('drop', (e) => {
-               e.preventDefault();
-               box.style.background = 'rgba(255, 255, 255, 0.1)';
-               
-               const originalInput = document.getElementById('input');
-               originalInput.files = e.dataTransfer.files;
-               
-               const event = new Event('change');
-               originalInput.dispatchEvent(event);
-           });
-       </script>
+            box.addEventListener('drop', (e) => {
+                e.preventDefault();
+                box.style.background = 'rgba(255, 255, 255, 0.1)';
+                
+                const originalInput = document.getElementById('input');
+                originalInput.files = e.dataTransfer.files;
+                
+                const event = new Event('change');
+                originalInput.dispatchEvent(event);
+            });
+        </script>
 
     </body>
 </html>
